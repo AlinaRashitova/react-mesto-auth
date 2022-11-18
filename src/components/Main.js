@@ -1,9 +1,23 @@
-import { useState } from "react"
+import React, { useState } from "react"
+import { api } from "../utils/api";
+import Card from "./Card";
 
 function Main(props) {
   const [userName, setUserName] = useState('');
   const [userDescription, setuserDescription] = useState('');
   const [userAvatar, setuserAvatar] = useState('');
+  const [cards, setCards] = useState([]);
+
+  React.useEffect(() => {
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      .then(([userData, cards]) => {
+        setUserName(userData.name)
+        setuserDescription(userData.about)
+        setuserAvatar(userData.avatar)
+        setCards(cards)
+      })
+      .catch(err => console.log(`${err}`))
+  }, []);
 
   return (
     <main>
@@ -30,7 +44,11 @@ function Main(props) {
           className="profile__button profile__button_add button">
         </button>
       </section>
-      <section className="cards" aria-label="cards"></section>
+      <section className="cards" aria-label="cards">
+        {cards.map((card) => (
+          <Card key={card._id}  card={card} />
+        ))}
+      </section>
     </main>
   )
 }
