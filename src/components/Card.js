@@ -1,4 +1,4 @@
-function Card({ card, onCardClick }) {
+function Card({ card, onCardClick, onDeleteClick }) {
   function handleClick() {
     onCardClick(card);
   }
@@ -8,7 +8,8 @@ function Card({ card, onCardClick }) {
       <button
         aria-label="deleteButton"
         type="button"
-        className="card__button card__button_delete button">
+        className="card__button card__button_delete button"
+        onClick={onDeleteClick}>
       </button>
       <img src={card.link} alt={card.name} className="card__image" onClick={handleClick} />
       <div className="card__info">

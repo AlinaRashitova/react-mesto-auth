@@ -24,7 +24,7 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
-  function handleConfirmationClick() {
+  function handleDeleteCardClick() {
     setIsConfirmationPopupOpen(true);
   }
 
@@ -44,7 +44,7 @@ function App() {
     <div className="page">
       <div className="page__container">
         <Header />
-        <Main onEditAvatar={handleEditAvatarClick} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onConfirmation={handleConfirmationClick} onCardClick={handleCardClick} />
+        <Main onEditAvatar={handleEditAvatarClick} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onCardClick={handleCardClick} onDeleteClick={handleDeleteCardClick} />
         <Footer />
         <PopupWithForm name="edit" title="Редактировать профиль" button="Сохранить" isOpen={isEditProfilePopupOpen} onClose={closeAllPopups}>
           <label className="popup__label">
