@@ -2,7 +2,6 @@ import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
-import Card from './Card';
 import { useState } from 'react';
 import ImagePopup from './ImagePopup';
 
@@ -11,7 +10,7 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isConfirmationPopupOpen, setIsConfirmationPopupOpen] = useState(false);
-  const [selectedCard, setIsSelectedCard] = useState();
+  const [selectedCard, setSelectedCard] = useState();
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -29,19 +28,23 @@ function App() {
     setIsConfirmationPopupOpen(true);
   }
 
+  function handleCardClick(card) {
+    setSelectedCard(card);
+  }
+
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsConfirmationPopupOpen(false);
-    setIsSelectedCard(null);
+    setSelectedCard(null);
   }
 
   return (
     <div className="page">
       <div className="page__container">
         <Header />
-        <Main onEditAvatar={handleEditAvatarClick} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onConfirmation={handleConfirmationClick} />
+        <Main onEditAvatar={handleEditAvatarClick} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onConfirmation={handleConfirmationClick} onCardClick={handleCardClick} />
         <Footer />
         <PopupWithForm name="edit" title="Редактировать профиль" button="Сохранить" isOpen={isEditProfilePopupOpen} onClose={closeAllPopups}>
           <label className="popup__label">
