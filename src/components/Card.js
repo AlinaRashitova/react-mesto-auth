@@ -18,8 +18,7 @@ function Card({ card, onCardClick, onDeleteClick }) {
           <button
             aria-label="likeButton"
             type="button"
-            className="card__button card__button_like">
-          </button>
+            className="card__button card__button_like" />
           <span className="card__like-counter">{card.likes.length}</span>
         </div>
       </div>

@@ -32,8 +32,7 @@ function Main(props) {
               onClick={props.onEditProfile}
               aria-label="editButton"
               type="button"
-              className="profile__button profile__button_edit button">
-            </button>
+              className="profile__button profile__button_edit button" />
           </div>
           <p className="profile__subtitle">{userDescription}</p>
         </div>
@@ -41,12 +40,15 @@ function Main(props) {
           onClick={props.onAddPlace}
           aria-label="addButton"
           type="button"
-          className="profile__button profile__button_add button">
-        </button>
+          className="profile__button profile__button_add button" />
       </section>
       <section className="cards" aria-label="cards">
         {cards.map((card) => (
-          <Card key={card._id} card={card} onCardClick={props.onCardClick} onDeleteClick={props.onDeleteClick}/>
+          <Card
+            key={card._id}
+            card={card}
+            onCardClick={props.onCardClick}
+            onDeleteClick={props.onDeleteClick} />
         ))}
       </section>
     </main>
