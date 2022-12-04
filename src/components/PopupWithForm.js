@@ -2,6 +2,7 @@ function PopupWithForm(props) {
   return (
     <div
       className={`popup popup_type_${props.name} ${props.isOpen ? 'popup_opened' : ''}`}
+      onClick={props.onOverlay}
       aria-label="popup">
       <div className="popup__container">
         <button
@@ -11,7 +12,11 @@ function PopupWithForm(props) {
           onClick={props.onClose} />
         <div className="popup__content">
           <h2 className="popup__title">{props.title}</h2>
-          <form name={`${props.name}-form`} className={`popup__form popup__form_type_${props.name}`} noValidate>
+          <form
+            onSubmit={props.onSubmit}
+            name={`${props.name}-form`}
+            className={`popup__form popup__form_type_${props.name}`}
+            noValidate>
             {props.children}
             <button
               aria-label="saveButton"
