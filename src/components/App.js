@@ -92,9 +92,7 @@ function App() {
     setIsLoading(true);
     api.deleteCard(card._id)
       .then(() => {
-        setCards(() => {
-          cards.filter((item) => item !== card)
-        })
+        setCards(cards => cards.filter(c => c._id !== card._id))
         closeAllPopups()
       })
       .catch(err => console.log(`${err}`))
