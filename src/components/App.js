@@ -76,7 +76,8 @@ function App() {
           setCards((state) => state.map((c) => (
             c._id === card._id ? newCard : c
           )));
-        });
+        })
+        .catch(err => console.log(`${err}`))
     } else {
       api
         .putLike(card._id)
@@ -84,7 +85,8 @@ function App() {
           setCards((state) => state.map((c) => (
             c._id === card._id ? newCard : c
           )));
-        });
+        })
+        .catch(err => console.log(`${err}`))
     }
   }
 
