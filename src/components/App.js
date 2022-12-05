@@ -14,7 +14,7 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
-  const [isConfirmationPopupOpen, setIsConfirmationPopupOpen] = useState(false);
+  /*const [isConfirmationPopupOpen, setIsConfirmationPopupOpen] = useState(false);*/
   const [selectedCard, setSelectedCard] = useState(null);
   const [currentUser, setCurrentUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -45,9 +45,9 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
-  function handleDeleteCardClick() {
+  /*function handleDeleteCardClick() {
     setIsConfirmationPopupOpen(true);
-  }
+  }*/
 
   function handleCardClick(card) {
     setSelectedCard(card);
@@ -57,7 +57,7 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
-    setIsConfirmationPopupOpen(false);
+    /*setIsConfirmationPopupOpen(false);*/
     setSelectedCard(null);
   }
 
@@ -73,25 +73,32 @@ function App() {
       api
         .deleteLike(card._id)
         .then((newCard) => {
-          setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+          setCards((state) => state.map((c) => (
+            c._id === card._id ? newCard : c
+          )));
         });
     } else {
       api
         .putLike(card._id)
         .then((newCard) => {
-          setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+          setCards((state) => state.map((c) => (
+            c._id === card._id ? newCard : c
+          )));
         });
     }
   }
 
   function handleCardDelete(card) {
+    setIsLoading(true);
     api.deleteCard(card._id)
       .then(() => {
-        setCards((state) => {
-          state.filter(c => c !== card)
+        setCards(() => {
+          cards.filter((item) => item !== card)
         })
+        closeAllPopups()
       })
       .catch(err => console.log(`${err}`))
+      .finally(() => setIsLoading(false));
   }
 
   function handleUpdateUser(user) {
@@ -99,7 +106,7 @@ function App() {
     api.editProfile(user)
       .then((res) => {
         setCurrentUser(res)
-        setIsEditProfilePopupOpen(false);
+        closeAllPopups();
       })
       .catch(err => console.log(`${err}`))
       .finally(() => setIsLoading(false));
@@ -110,7 +117,7 @@ function App() {
     api.changeAvatar(avatar)
       .then((res) => {
         setCurrentUser(res);
-        setIsLoading(false);
+        closeAllPopups();
       })
       .catch(err => console.log(`${err}`))
       .finally(() => setIsLoading(false));
@@ -121,7 +128,7 @@ function App() {
     api.addCard(card)
       .then((newCard) => {
         setCards([newCard, ...cards]);
-        setIsAddPlacePopupOpen(false);
+        closeAllPopups();
       })
       .catch(err => console.log(`${err}`))
       .finally(() => setIsLoading(false));
@@ -157,7 +164,8 @@ function App() {
             isLoading={isLoading}
             isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
-            onAddPlace={handleAddPlaceSubmit} />
+            onAddPlace={handleAddPlaceSubmit}
+            onOverlayClose={closeOnOverlayClick} />
           <ImagePopup
             card={selectedCard}
             onClose={closeAllPopups}

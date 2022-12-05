@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import PopupWithForm from "./PopupWithForm"
 
@@ -28,6 +29,8 @@ function AddPlacePopup({ isLoading, isOpen, onClose, onOverlayClose, onAddPlace 
         <input
           type="text"
           name="name"
+          value={name}
+          onChange={evt => setName(evt.target.value)}
           id="placeNameInput"
           placeholder="Название"
           className="popup__input popup__input_type_place-name"
@@ -40,6 +43,8 @@ function AddPlacePopup({ isLoading, isOpen, onClose, onOverlayClose, onAddPlace 
         <input
           type="url"
           name="link"
+          value={link}
+          onChange={evt => setLink(evt.target.value)}
           id="imageSourceInput"
           placeholder="Ссылка на картинку"
           className="popup__input popup__input_type_image-source"

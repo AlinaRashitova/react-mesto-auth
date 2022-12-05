@@ -25,12 +25,12 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
 
   return (
     <article className="card">
-      <button
+      {isOwn && <button
         aria-label="deleteButton"
         type="button"
         className={cardDeleteButtonClassName}
         onClick={handleDeleteClick}>
-      </button>
+      </button>}
       <img
         src={card.link}
         alt={card.name}

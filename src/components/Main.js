@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useContext } from "react"
-import { api } from "../utils/api";
+import React, { useContext } from "react";
 import Card from "./Card";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-function Main(props) {
+function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardDelete, onCardLike, cards }) {
   const currentUser = useContext(CurrentUserContext);
 
   return (
     <main>
       <section className="profile" aria-label="profile">
-        <div className="profile__avatar" onClick={props.onEditAvatar}>
+        <div className="profile__avatar" onClick={onEditAvatar}>
           <img
             src={currentUser ? currentUser.avatar : ''}
             alt="Аватар"
@@ -19,7 +18,7 @@ function Main(props) {
           <div className="profile__info-edit">
             <h1 className="profile__title">{currentUser ? currentUser.name : ''}</h1>
             <button
-              onClick={props.onEditProfile}
+              onClick={onEditProfile}
               aria-label="editButton"
               type="button"
               className="profile__button profile__button_edit button" />
@@ -27,19 +26,19 @@ function Main(props) {
           <p className="profile__subtitle">{currentUser ? currentUser.about : ''}</p>
         </div>
         <button
-          onClick={props.onAddPlace}
+          onClick={onAddPlace}
           aria-label="addButton"
           type="button"
           className="profile__button profile__button_add button" />
       </section>
       <section className="cards" aria-label="cards">
-        {props.cards.map((card) => (
+        {cards.map((card) => (
           <Card
             key={card._id}
             card={card}
-            onCardClick={props.onCardClick}
-            onCardLike={props.onCardLike}
-            onCardDelete={props.onCardDelete} />
+            onCardClick={onCardClick}
+            onCardLike={onCardLike}
+            onCardDelete={onCardDelete} />
         ))}
       </section>
     </main>

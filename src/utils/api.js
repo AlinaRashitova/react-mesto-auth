@@ -21,20 +21,20 @@ class Api {
     return this._checkResponse(response);
   }
 
-  async editProfile(name, about) {
+  async editProfile(userData) {
     const response = await fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       headers: this._header,
-      body: JSON.stringify({ name, about }),
+      body: JSON.stringify(userData),
     });
     return this._checkResponse(response);
   }
 
-  async addCard(name, link) {
+  async addCard(cardData) {
     const response = await fetch(`${this._baseUrl}/cards`, {
       method: 'POST',
       headers: this._header,
-      body: JSON.stringify({ name, link }),
+      body: JSON.stringify(cardData),
     });
     return this._checkResponse(response);
   }
@@ -55,7 +55,7 @@ class Api {
     return this._checkResponse(response);
   }
 
-  async changeAvatar(avatar) {
+  async changeAvatar({ avatar }) {
     const response = await fetch(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       headers: this._header,
