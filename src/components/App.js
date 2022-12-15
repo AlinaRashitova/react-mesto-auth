@@ -1,23 +1,31 @@
 import { useState, useEffect } from 'react';
+import { Switch, Route, Redirect, Routes } from 'react-router-dom';
+import { api } from '../utils/api';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import ProtectedRoute from './ProtectedRoute';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import ImagePopup from './ImagePopup';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { api } from '../utils/api';
 import AddPlacePopup from './AddPlacePopup';
+import Login from './Login';
+import Register from './Register';
+import InfoTooltip from './InfoTooltip';
+import * as auth from '../utils/auth';
 
 function App() {
   const [cards, setCards] = useState([]);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
-  /*const [isConfirmationPopupOpen, setIsConfirmationPopupOpen] = useState(false);*/
   const [selectedCard, setSelectedCard] = useState(null);
   const [currentUser, setCurrentUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [email, setEmail] = useState("");
+  const [isOpenInfoTooltip, setisOpenInfoTooltip] = useState(false);
 
   useEffect(() => {
     api
@@ -33,6 +41,25 @@ function App() {
       .catch(err => console.log(`${err}`))
   }, [])
 
+  useEffect(() => {
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      auth.checkToken(token)
+      .then((res) => {
+        if (res) {
+          setEmail(res.data.email);
+          handleLogin();
+        }
+      })
+      .catch(err => console.log(`${err}`))
+      .finally(() => history.push('/'));
+    }
+  }, [loggedIn, email, history])
+
+  const handleLogin = () => {
+    setLoggedIn(true);
+  }
+
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
   }
@@ -45,19 +72,19 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
-  /*function handleDeleteCardClick() {
-    setIsConfirmationPopupOpen(true);
-  }*/
-
   function handleCardClick(card) {
     setSelectedCard(card);
+  }
+
+  function handleInfoTooltipClick() {
+    setisOpenInfoTooltip(true);
   }
 
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
-    /*setIsConfirmationPopupOpen(false);*/
+    setisOpenInfoTooltip(false);
     setSelectedCard(null);
   }
 
@@ -139,15 +166,29 @@ function App() {
       <div className="page__container">
         <CurrentUserContext.Provider value={currentUser}>
           <Header />
-          <Main
-            onEditAvatar={handleEditAvatarClick}
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            onCardClick={handleCardClick}
-            onCardDelete={handleCardDelete}
-            onCardLike={handleCardLike}
-            cards={cards} />
-          <Footer />
+          <Switch>
+            <ProtectedRoute
+              exact
+              path="/"
+              component={Main}
+              onEditAvatar={handleEditAvatarClick}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onCardClick={handleCardClick}
+              onCardDelete={handleCardDelete}
+              onCardLike={handleCardLike}
+              cards={cards}
+            >
+              {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+            </ProtectedRoute>
+            <Route path="/sign-up">
+              <Register />
+            </Route>
+            <Route path="/sign-in">
+              <Login />
+            </Route>
+          </Switch>
+          {loggedIn && <Footer />}
           <EditProfilePopup
             isLoading={isLoading}
             isOpen={isEditProfilePopupOpen}
@@ -170,8 +211,10 @@ function App() {
             card={selectedCard}
             onClose={closeAllPopups}
             onOverlay={closeOnOverlayClick} />
+          <InfoTooltip
+            onClose={closeAllPopups}
+            isOpen={isOpenInfoTooltip} />
         </CurrentUserContext.Provider>
-
       </div>
     </div>
   );
