@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Switch, Route, Redirect, Routes } from 'react-router-dom';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import { api } from '../utils/api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import ProtectedRoute from './ProtectedRoute';
@@ -26,6 +26,8 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
   const [isOpenInfoTooltip, setisOpenInfoTooltip] = useState(false);
+
+  const history = useHistory();
 
   useEffect(() => {
     api
@@ -76,9 +78,9 @@ function App() {
     setSelectedCard(card);
   }
 
-  function handleInfoTooltipClick() {
+  /*function handleInfoTooltipClick() {
     setisOpenInfoTooltip(true);
-  }
+  }*/
 
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
