@@ -47,18 +47,18 @@ function App() {
     const token = localStorage.getItem('jwt');
     if (token) {
       auth.checkToken(token)
-      .then((res) => {
-        if (res) {
-          setEmail(res.data.email);
-          handleLogin();
-        }
-      })
-      .catch(err => console.log(`${err}`))
-      .finally(() => history.push('/'));
+        .then((res) => {
+          if (res) {
+            setEmail(res.data.email);
+            handleLogin();
+          }
+        })
+        .catch(err => console.log(`${err}`))
+        .finally(() => history.push('/'));
     }
   }, [loggedIn, email, history])
 
-  const handleLogin = () => {
+  function handleLogin() {
     setLoggedIn(true);
   }
 
@@ -167,7 +167,7 @@ function App() {
     <div className="page">
       <div className="page__container">
         <CurrentUserContext.Provider value={currentUser}>
-          <Header />
+          <Header emailUser={email} />
           <Switch>
             <ProtectedRoute
               exact
@@ -187,7 +187,10 @@ function App() {
               <Register />
             </Route>
             <Route path="/sign-in">
-              <Login />
+              <Login handleLogin={handleLogin} />
+            </Route>
+            <Route>
+              <Redirect to="/" />
             </Route>
           </Switch>
           {loggedIn && <Footer />}
