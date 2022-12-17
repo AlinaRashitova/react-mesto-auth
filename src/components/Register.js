@@ -1,14 +1,11 @@
 import React, { useState } from "react";
-import { useHistory, Link } from 'react-router-dom';
-import * as auth from '../utils/auth';
+import { Link } from 'react-router-dom';
 
-function Register() {
+function Register({ onSubmit }) {
   const [data, setData] = useState({
     email: "",
     password: "",
   });
-
-  const history = useHistory();
 
   const handleChange = (evt) => {
     const { name, value } = evt.target;
@@ -20,25 +17,7 @@ function Register() {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    if (!data.email || !data.password) {
-      return;
-    }
-    auth.register(data.email.toLowerCase(), data.password)
-      .then((res) => {
-        if (res.statusCode !== 400) {
-          setData({
-            ...data,
-            message: "",
-          });
-          history.push("/sign-in");
-        } else {
-          setData({
-            ...data,
-            message: "Что-то пошло не так!",
-          });
-        }
-      })
-      .catch(err => console.log(`${err}`));
+    onSubmit(data);
   }
 
   return (

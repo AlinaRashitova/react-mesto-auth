@@ -1,7 +1,7 @@
 import { Link, Route, Switch } from 'react-router-dom'
 import logo from '../images/logo.svg'
 
-function Header({ emailUser }) {
+function Header({ emailUser, onSignOut }) {
   return (
     <header className="header">
       <img src={logo} alt="Логотип проекта Mesto" className="header__logo" />
@@ -17,10 +17,10 @@ function Header({ emailUser }) {
           </Link>
         </Route>
         <Route path="/">
-            <Link to="/sign-in" className='header__link'>
-              {emailUser}Выйти
-            </Link>
-          </Route>
+          <Link to="/sign-in" className="header__link" onClick={onSignOut}>
+            {emailUser} Выйти
+          </Link>
+        </Route>
       </Switch>
     </header>
   );

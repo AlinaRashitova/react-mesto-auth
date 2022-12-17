@@ -1,24 +1,24 @@
 import success from '../images/success.png';
 import unsuccess from '../images/unsuccess.png';
 
-function InfoTooltip(props) {
+function InfoTooltip({ onClose, isOpen, isRequestStatus }) {
   return (
-    <section className={`popup popup_type_${props.name}${props.isOpenInfoTooltip ? 'popup_opened' : ''}`}>
+    <section className={`popup popup_type_info-tooltip ${isOpen ? 'popup_opened' : ''}`}>
       <div className="popup__container">
         <button
           aria-label="closeButton"
           type="button"
           className="popup__button popup__button_close button"
-          onClick={props.onClose}
+          onClick={onClose}
         />
         <div className="popup__info-status">
           <img
             className="popup__info-image"
-            src={props.isRequestStatus ? success : unsuccess}
-            alt={props.isRequestStatus ? 'Успешно' : 'Попробуйте еще раз'}
+            src={isRequestStatus ? success : unsuccess}
+            alt={isRequestStatus ? 'Успешно' : 'Попробуйте еще раз'}
           />
           <h2 className="popup__title popup__title-status">
-            {props.isRequestStatus
+            {isRequestStatus
               ? 'Вы успешно зарегистрировались!'
               : 'Что-то пошло не так! Попробуйте еще раз.'}
           </h2>

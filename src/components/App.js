@@ -25,7 +25,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
-  const [isOpenInfoTooltip, setisOpenInfoTooltip] = useState(false);
+  const [isOpenInfoTooltip, setIsOpenInfoTooltip] = useState(false);
+  const [requestStatus, setRequestStatus] = useState(false);
 
   const history = useHistory();
 
@@ -44,7 +45,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const token = localStorage.getItem('jwt');
+    const token = localStorage.getItem("token");
     if (token) {
       auth.checkToken(token)
         .then((res) => {
@@ -86,8 +87,12 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
-    setisOpenInfoTooltip(false);
+    setIsOpenInfoTooltip(false);
     setSelectedCard(null);
+  }
+
+  function handleInfoTooltipPopupOpen() {
+    setIsOpenInfoTooltip(true)
   }
 
   function closeOnOverlayClick(evt) {
@@ -163,16 +168,47 @@ function App() {
       .finally(() => setIsLoading(false));
   }
 
+  function handleLoginSubmit(data) {
+    auth.authorize(data)
+      .then((res) => {
+        localStorage.setItem("token", res.token);
+        handleLogin();
+      })
+      .then(() => history.push("/"))
+      .catch(err => console.log(`${err}`))
+  }
+
+  function handleRegistrationSubmit(data) {
+    auth.register(data)
+      .then((res) => {
+        if (res) {
+          setRequestStatus(true)
+          handleInfoTooltipPopupOpen();
+        }
+      })
+      .then(() => history.push("/sign-in"))
+      .catch((err) => {
+        console.log(`${err}`)
+        setRequestStatus(false)
+        handleInfoTooltipPopupOpen();
+      })
+  }
+
+  function handleSignOut() {
+    localStorage.removeItem("token");
+  }
+
   return (
     <div className="page">
       <div className="page__container">
         <CurrentUserContext.Provider value={currentUser}>
-          <Header emailUser={email} />
+          <Header emailUser={email} onSignOut={handleSignOut} />
           <Switch>
             <ProtectedRoute
               exact
               path="/"
               component={Main}
+              loggedIn={loggedIn}
               onEditAvatar={handleEditAvatarClick}
               onEditProfile={handleEditProfileClick}
               onAddPlace={handleAddPlaceClick}
@@ -184,10 +220,10 @@ function App() {
               {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
             </ProtectedRoute>
             <Route path="/sign-up">
-              <Register />
+              <Register onSubmit={handleRegistrationSubmit} />
             </Route>
             <Route path="/sign-in">
-              <Login handleLogin={handleLogin} />
+              <Login onSubmit={handleLoginSubmit} />
             </Route>
             <Route>
               <Redirect to="/" />
@@ -218,7 +254,8 @@ function App() {
             onOverlay={closeOnOverlayClick} />
           <InfoTooltip
             onClose={closeAllPopups}
-            isOpen={isOpenInfoTooltip} />
+            isOpen={isOpenInfoTooltip}
+            isRequestStatus={requestStatus} />
         </CurrentUserContext.Provider>
       </div>
     </div>
