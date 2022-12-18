@@ -15,9 +15,11 @@ function AddPlacePopup({ isLoading, isOpen, onClose, onOverlayClose, onAddPlace 
   }
 
   useEffect(() => {
-    setName('');
-    setLink('');
-}, [isOpen]);
+    if (isOpen) {
+      setName('');
+      setLink('');
+    }
+  }, [isOpen]);
 
 
   return (
@@ -58,5 +60,5 @@ function AddPlacePopup({ isLoading, isOpen, onClose, onOverlayClose, onAddPlace 
     </PopupWithForm>
   )
 }
- export default AddPlacePopup;
+export default AddPlacePopup;
 

@@ -50,12 +50,11 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
+    if (isLoggedIn && token) {
       auth.checkToken(token)
         .then((res) => {
           if (res) {
             setEmail(res.data.email);
-            handleLogin();
             history.push("/")
           }
         })
@@ -63,8 +62,8 @@ function App() {
     }
   })
 
-  function handleLogin() {
-    setIsLoggedIn(true);
+  function handleLogin(isLoggedIn) {
+    setIsLoggedIn(isLoggedIn);
   }
 
   function handleEditAvatarClick() {
@@ -176,7 +175,7 @@ function App() {
     auth.authorize(data)
       .then((res) => {
         localStorage.setItem("token", res.token);
-        handleLogin();
+        handleLogin(true);
       })
       .then(() => history.push("/"))
       .catch(err => console.log(`${err}`))
@@ -200,6 +199,7 @@ function App() {
 
   function handleSignOut() {
     localStorage.removeItem("token");
+    handleLogin(false);
   }
 
   return (
@@ -208,9 +208,13 @@ function App() {
         <CurrentUserContext.Provider value={currentUser}>
           <Header emailUser={email} onSignOut={handleSignOut} />
           <Switch>
+            <Route path="/sign-up">
+              <Register onSubmit={handleRegistrationSubmit} />
+            </Route>
+            <Route path="/sign-in">
+              <Login onSubmit={handleLoginSubmit} />
+            </Route>
             <ProtectedRoute
-              exact
-              path="/"
               component={Main}
               loggedIn={isLoggedIn}
               onEditAvatar={handleEditAvatarClick}
@@ -221,12 +225,6 @@ function App() {
               onCardLike={handleCardLike}
               cards={cards}
             />
-            <Route path="/sign-up">
-              <Register onSubmit={handleRegistrationSubmit} />
-            </Route>
-            <Route path="/sign-in">
-              <Login onSubmit={handleLoginSubmit} />
-            </Route>
           </Switch>
           {isLoggedIn && <Footer />}
           <EditProfilePopup

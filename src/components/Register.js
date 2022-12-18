@@ -43,6 +43,7 @@ function Register({ onSubmit }) {
           name="password"
           value={data.password}
           onChange={handleChange}
+          minLength={5}
         />
         <button type="submit" className="register__button button">Зарегистрироваться</button>
       </form>

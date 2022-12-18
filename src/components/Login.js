@@ -42,6 +42,7 @@ function Login({ onSubmit }) {
           name="password"
           value={data.password}
           onChange={handleChange}
+          minLength={5}
         />
         <button type="submit" className="login__button button">Войти</button>
       </form>
