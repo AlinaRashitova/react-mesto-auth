@@ -23,7 +23,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [currentUser, setCurrentUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
   const [isOpenInfoTooltip, setIsOpenInfoTooltip] = useState(false);
   const [requestStatus, setRequestStatus] = useState(false);
@@ -31,18 +31,22 @@ function App() {
   const history = useHistory();
 
   useEffect(() => {
-    api
-      .getInitialCards()
-      .then(cards => setCards(cards))
-      .catch(err => console.log(`${err}`))
-  }, [])
+    if (isLoggedIn) {
+      api
+        .getInitialCards()
+        .then(cards => setCards(cards))
+        .catch(err => console.log(`${err}`))
+    }
+  }, [isLoggedIn])
 
   useEffect(() => {
-    api
-      .getUserInfo()
-      .then(user => setCurrentUser(user))
-      .catch(err => console.log(`${err}`))
-  }, [])
+    if (isLoggedIn) {
+      api
+        .getUserInfo()
+        .then(user => setCurrentUser(user))
+        .catch(err => console.log(`${err}`))
+    }
+  }, [isLoggedIn])
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -52,15 +56,15 @@ function App() {
           if (res) {
             setEmail(res.data.email);
             handleLogin();
+            history.push("/")
           }
         })
-        .catch(err => console.log(`${err}`))
-        .finally(() => history.push('/'));
+        .catch(err => console.log(`${err}`));
     }
-  }, [loggedIn, email, history])
+  })
 
   function handleLogin() {
-    setLoggedIn(true);
+    setIsLoggedIn(true);
   }
 
   function handleEditAvatarClick() {
@@ -208,7 +212,7 @@ function App() {
               exact
               path="/"
               component={Main}
-              loggedIn={loggedIn}
+              loggedIn={isLoggedIn}
               onEditAvatar={handleEditAvatarClick}
               onEditProfile={handleEditProfileClick}
               onAddPlace={handleAddPlaceClick}
@@ -216,20 +220,15 @@ function App() {
               onCardDelete={handleCardDelete}
               onCardLike={handleCardLike}
               cards={cards}
-            >
-              {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
-            </ProtectedRoute>
+            />
             <Route path="/sign-up">
               <Register onSubmit={handleRegistrationSubmit} />
             </Route>
             <Route path="/sign-in">
               <Login onSubmit={handleLoginSubmit} />
             </Route>
-            <Route>
-              <Redirect to="/" />
-            </Route>
           </Switch>
-          {loggedIn && <Footer />}
+          {isLoggedIn && <Footer />}
           <EditProfilePopup
             isLoading={isLoading}
             isOpen={isEditProfilePopupOpen}
