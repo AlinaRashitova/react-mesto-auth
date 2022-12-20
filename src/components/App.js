@@ -50,20 +50,21 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (isLoggedIn && token) {
+    if (token) {
       auth.checkToken(token)
         .then((res) => {
           if (res) {
             setEmail(res.data.email);
+            handleLogin();
             history.push("/")
           }
         })
         .catch(err => console.log(`${err}`));
     }
-  })
+  }, [])
 
-  function handleLogin(isLoggedIn) {
-    setIsLoggedIn(isLoggedIn);
+  function handleLogin() {
+    setIsLoggedIn(true);
   }
 
   function handleEditAvatarClick() {
@@ -175,6 +176,7 @@ function App() {
     auth.authorize(data)
       .then((res) => {
         localStorage.setItem("token", res.token);
+        setEmail(data.email);
         handleLogin(true);
       })
       .then(() => history.push("/"))
